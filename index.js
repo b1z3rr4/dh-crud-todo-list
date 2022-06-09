@@ -24,7 +24,7 @@ app.post('/projects', (request, response) =>{
 
 app.post('/projects/:id/tasks', (request, response) =>{
     const { id } = request.params;
-    const { tasks } = request.body;
+    const { title } = request.body;
     
     const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
     
@@ -32,7 +32,7 @@ app.post('/projects/:id/tasks', (request, response) =>{
         return response.status(400).json({error: 'Projeto não encontrado.'});
     };
 
-    projetos[projetoIndex].tasks.push(...tasks)
+    projetos[projetoIndex].tasks.push(title)
 
     const projeto = { id:  projetos[projetoIndex].id,
     title: projetos[projetoIndex].title,
@@ -69,7 +69,7 @@ app.put("/projects/:id", (request, response) => {
 
 app.put("/projects/:id/:index", (request, response) => {
     const { id, index } = request.params;
-    const { task } = request.body;
+    const { title } = request.body;
 
     const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
 
@@ -77,7 +77,7 @@ app.put("/projects/:id/:index", (request, response) => {
         return response.status(400).json({error: 'Projeto não encontrado.'});
     };
 
-    projetos[projetoIndex].tasks[index] = task;
+    projetos[projetoIndex].tasks[index] = title;
 
     const projeto = {
         id: projetos[projetoIndex].id,
@@ -100,6 +100,21 @@ app.delete("/projects/:id", (request, response) => {
     };
 
     projetos.splice(projetoIndex, 1)
+    
+    return response.status(204).send()
+    //response.status(200).json('Sucesso!')
+})
+
+app.delete("/projects/:id/:index", (request, response) => {
+    const { id, index } = request.params;
+
+    const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
+
+    if (projetoIndex < 0){
+        return response.status(400).json({error: 'Projeto não encontrado.'});
+    };
+
+    projetos[projetoIndex].tasks.splice(index, 1)
     
     return response.status(204).send()
     //response.status(200).json('Sucesso!')
