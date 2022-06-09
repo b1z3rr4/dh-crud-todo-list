@@ -34,7 +34,7 @@ app.post('/projects/:id/tasks', (request, response) =>{
 
     projetos[projetoIndex].tasks.push(...tasks)
 
-    const projeto = { id: projetoIndex,
+    const projeto = { id:  projetos[projetoIndex].id,
     title: projetos[projetoIndex].title,
     tasks: projetos[projetoIndex].tasks
     };
@@ -59,6 +59,29 @@ app.put("/projects/:id", (request, response) => {
     const projeto = {
         id: projetos[projetoIndex].id,
         title,
+        tasks: projetos[projetoIndex].tasks
+    };
+
+    projetos[projetoIndex] = projeto;
+
+    return response.json(projeto);
+})
+
+app.put("/projects/:id/:index", (request, response) => {
+    const { id, index } = request.params;
+    const { task } = request.body;
+
+    const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
+
+    if (projetoIndex < 0){
+        return response.status(400).json({error: 'Projeto não encontrado.'});
+    };
+
+    projetos[projetoIndex].tasks[index] = task;
+
+    const projeto = {
+        id: projetos[projetoIndex].id,
+        title: projetos[projetoIndex].title,
         tasks: projetos[projetoIndex].tasks
     };
 
